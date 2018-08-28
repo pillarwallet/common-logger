@@ -4,7 +4,7 @@
   "description": "A common module that allows a logger to be instantiated and returns an instance of a logger.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "eslint . && jest",
     "lint": "eslint .",
     "generateReadme": "echo \"\" > README.md && jsdoc2md lib/**/* --template templates/README.hbs > README.md"
   },
