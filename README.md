@@ -3,14 +3,14 @@ Common-logger is a utility that takes a set of configuration parameters and tran
 
 Common-logger currently supports three transports: `Console`, `File` and `Syslog`.
 
-## Install
-`npm i @pillarwallet/common-logger`
+## Install
+Run `npm i @pillarwallet/common-logger`
 
-## Examples
+## Examples
 Instantiate a logger with default options (just writing out to Console):
 
 ```javascript
-const commonLogger = require('@pillarwallet/common-logger);
+const commonLogger = require('@pillarwallet/common-logger');
 
 commonLogger.build();
 logger.debug('Hello');
@@ -19,7 +19,7 @@ logger.debug('Hello');
 Instantiate a logger with default options, with a console and file transport:
 
 ```javascript
-const commonLogger = require('@pillarwallet/common-logger);
+const commonLogger = require('@pillarwallet/common-logger');
 
 commonLogger.build((), [{
   type: 'Console',
