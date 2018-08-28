@@ -1,0 +1,43 @@
+# common-logger
+Common-logger is a utility that takes a set of configuration parameters and transport options, and returns a WInston logger.
+
+Common-logger currently supports three transports: `Console`, `File` and `Syslog`.
+
+## Install
+`npm i @pillarwallet/common-logger`
+
+## Examples
+Instantiate a logger with default options (just writing out to Console):
+
+```javascript
+const commonLogger = require('@pillarwallet/common-logger);
+
+commonLogger.build();
+logger.debug('Hello');
+```
+
+Instantiate a logger with default options, with a console and file transport:
+
+```javascript
+const commonLogger = require('@pillarwallet/common-logger);
+
+commonLogger.build((), [{
+  type: 'Console',
+}, {
+  type: 'File',
+  options: {
+    level: 'silly',
+    filename: './logs/silly.log',
+  }
+}]);
+logger.debug('Hello');
+// -> writes to Console
+// -> writes to File
+```
+
+You can add as many transports as you want, providing that they are supported (listed above). Any unrecognised transports are ignored.
+
+# API
+
+{{>main}}
+
