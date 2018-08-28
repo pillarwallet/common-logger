@@ -1,11 +1,12 @@
 {
   "name": "common-logger",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A common module that allows a logger to be instantiated and returns an instance of a logger.",
   "main": "index.js",
   "scripts": {
     "test": "eslint . && jest",
     "lint": "eslint .",
+    "precommit": "npm test",
     "generateReadme": "echo \"\" > README.md && jsdoc2md lib/**/* --template templates/README.hbs > README.md"
   },
   "publishConfig": {
@@ -32,6 +33,7 @@
     "eslint-plugin-import": "2.13.0",
     "eslint-plugin-jest": "21.17.0",
     "eslint-plugin-prettier": "2.6.1",
+    "husky": "0.14.3",
     "jest": "22.4.4",
     "jest-cli": "22.4.4",
     "jsdoc-to-markdown": "4.0.1",

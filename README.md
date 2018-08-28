@@ -62,12 +62,12 @@ list of desired transports. This function will try
 to fulfil the request and cycle through the array
 and match transports.
 
-**Kind**: global variable
-**Returns**: <code>Array</code> - constructedTransports
+**Kind**: global variable  
+**Returns**: <code>Array</code> - constructedTransports  
 
 | Param | Type |
 | --- | --- |
-| desiredTransports | <code>Array</code> |
+| desiredTransports | <code>Array</code> | 
 
 <a name="build"></a>
 
@@ -75,23 +75,19 @@ and match transports.
 Main entrypoint function to build and return
 a derived logger instance from Winston.
 
-**Kind**: global variable
+**Kind**: global variable  
 
 | Param | Type |
 | --- | --- |
-| configuration | <code>Object</code> |
-| desiredTransports | <code>Array</code> |
+| configuration | <code>Object</code> | 
+| desiredTransports | <code>Array</code> | 
 
 
-- [common-logger](#common-logger)
-- [API](#api)
-  - [Members](#members)
-  - [constructTransports ⇒ <code>Array</code>](#constructtransports-%E2%87%92-codearraycode)
-  - [build](#build)
-    - [build~winstonLogger](#buildwinstonlogger)
-    - [build~intermediaryConfiguration](#buildintermediaryconfiguration)
-    - [build~constructedTransports](#buildconstructedtransports)
-    - [build~finalConfiguration](#buildfinalconfiguration)
+* [build](#build)
+    * [~winstonLogger](#build..winstonLogger)
+    * [~intermediaryConfiguration](#build..intermediaryConfiguration)
+    * [~constructedTransports](#build..constructedTransports)
+    * [~finalConfiguration](#build..finalConfiguration)
 
 <a name="build..winstonLogger"></a>
 
@@ -100,21 +96,21 @@ Create an instance of a derived logger from Winston,
 using the finalConfiguration object build from the
 previous methods.
 
-**Kind**: inner property of [<code>build</code>](#build)
+**Kind**: inner property of [<code>build</code>](#build)  
 <a name="build..intermediaryConfiguration"></a>
 
 ### build~intermediaryConfiguration
 Setup scaffolding object for the
 rest of the function to utilise.
 
-**Kind**: inner constant of [<code>build</code>](#build)
+**Kind**: inner constant of [<code>build</code>](#build)  
 <a name="build..constructedTransports"></a>
 
 ### build~constructedTransports
 Call the constructTransports method with the
 incoming desired transports array.
 
-**Kind**: inner constant of [<code>build</code>](#build)
+**Kind**: inner constant of [<code>build</code>](#build)  
 <a name="build..finalConfiguration"></a>
 
 ### build~finalConfiguration
@@ -122,5 +118,5 @@ Create a new object called finalConfiguration, merging
 the intermediaryConfiguration, constructed transports
 and the incoming configuration object, if any.
 
-**Kind**: inner constant of [<code>build</code>](#build)
+**Kind**: inner constant of [<code>build</code>](#build)  
 
