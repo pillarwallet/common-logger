@@ -21,7 +21,7 @@ Instantiate a logger with default options, with a console and file transport:
 ```javascript
 const commonLogger = require('@pillarwallet/common-logger');
 
-commonLogger.build((), [{
+commonLogger.build({}, [{
   type: 'Console',
 }, {
   type: 'File',
