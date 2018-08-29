@@ -1,3 +1,5 @@
+/* eslint no-underscore-dangle: 0 */
+
 const winston = require('winston');
 const winstonizer = require('../../lib/winstonizer');
 
@@ -14,6 +16,93 @@ describe('The Winstonizer Module', () => {
       const logger = winstonizer.build();
 
       expect(logger.constructor.name).toBe('DerivedLogger');
+    });
+
+    it('should have returned an instance of DerivedLogger with custom configuration', () => {
+      const desiredConfiguration = {
+        level: 'error',
+        silent: true,
+        exitOnError: true,
+      };
+      const logger = winstonizer.build(
+        [
+          {
+            type: 'Console',
+          },
+        ],
+        desiredConfiguration,
+      );
+
+      expect(logger.constructor.name).toBe('DerivedLogger');
+
+      // Test with given configuration options
+      expect(logger.level).toBe(desiredConfiguration.level);
+      expect(logger.silent).toBe(desiredConfiguration.silent);
+      expect(logger.exitOnError).toBe(desiredConfiguration.exitOnError);
+    });
+
+    it('should returned an instance of DerivedLogger with console as a default transport', () => {
+      const logger = winstonizer.build();
+
+      expect(logger.constructor.name).toBe('DerivedLogger');
+      expect(logger._readableState.pipes.constructor.name).toBe('Console');
+    });
+
+    it('should returned an instance of DerivedLogger with more than one transport with options', () => {
+      const desiredTransports = [
+        {
+          type: 'Console',
+          options: {
+            level: 'debug',
+          },
+        },
+        {
+          type: 'File',
+          options: {
+            level: 'silly',
+            filename: './logs/silly.log',
+          },
+        },
+        {
+          type: 'Syslog',
+          options: {
+            host: 'https://syslogingest.com',
+            port: 8888,
+            app_name: 'logger-test',
+          },
+        },
+      ];
+      const splitFilename = desiredTransports[1].options.filename.split('/');
+      const logger = winstonizer.build(desiredTransports);
+
+      expect(logger.constructor.name).toBe('DerivedLogger');
+
+      // Test console with given options
+      expect(logger._readableState.pipes[0].constructor.name).toBe('Console');
+      expect(logger._readableState.pipes[0].level).toBe(
+        desiredTransports[0].options.level,
+      );
+
+      // Test File with given options
+      expect(logger._readableState.pipes[1].constructor.name).toBe('File');
+      expect(logger._readableState.pipes[1].level).toBe(
+        desiredTransports[1].options.level,
+      );
+      expect(logger._readableState.pipes[1].filename).toBe(splitFilename[2]);
+      expect(logger._readableState.pipes[1].dirname).toBe(
+        `${splitFilename[0]}/${splitFilename[1]}`,
+      );
+
+      // Test Syslog with given options
+      expect(logger._readableState.pipes[2].host).toBe(
+        desiredTransports[2].options.host,
+      );
+      expect(logger._readableState.pipes[2].port).toBe(
+        desiredTransports[2].options.port,
+      );
+      expect(logger._readableState.pipes[2].appName).toBe(
+        desiredTransports[2].options.app_name,
+      );
     });
   });
 

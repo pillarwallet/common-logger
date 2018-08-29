@@ -1,7 +1,10 @@
 # common-logger
-Common-logger is a utility that takes a set of configuration parameters and transport options, and returns a WInston logger.
+Common-logger is a utility that takes a set of configuration parameters and transport options, and returns a Winston logger.
 
 Common-logger currently supports three transports: `Console`, `File` and `Syslog`.
+
+## Updating this README.md
+Run `npm run generateReadme` to parse the code for JSDoc comment blocks and recreate this README.md file.
 
 ## Install
 Run `npm i @pillarwallet/common-logger`
@@ -48,7 +51,7 @@ list of desired transports. This function will try
 to fulfil the request and cycle through the array
 and match transports.</p>
 </dd>
-<dt><a href="#build">build</a></dt>
+<dt><a href="#build">build</a> ⇒ <code>Object</code></dt>
 <dd><p>Main entrypoint function to build and return
 a derived logger instance from Winston.</p>
 </dd>
@@ -71,7 +74,7 @@ and match transports.
 
 <a name="build"></a>
 
-## build
+## build ⇒ <code>Object</code>
 Main entrypoint function to build and return
 a derived logger instance from Winston.
 
@@ -79,11 +82,11 @@ a derived logger instance from Winston.
 
 | Param | Type |
 | --- | --- |
-| configuration | <code>Object</code> | 
 | desiredTransports | <code>Array</code> | 
+| configuration | <code>Object</code> | 
 
 
-* [build](#build)
+* [build](#build) ⇒ <code>Object</code>
     * [~winstonLogger](#build..winstonLogger)
     * [~intermediaryConfiguration](#build..intermediaryConfiguration)
     * [~constructedTransports](#build..constructedTransports)
