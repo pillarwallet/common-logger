@@ -1,0 +1,45 @@
+{
+  "name": "common-logger",
+  "version": "0.1.0",
+  "description": "A common module that allows a logger to be instantiated and returns an instance of a logger.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint && jest",
+    "lint": "eslint .",
+    "precommit": "npm test",
+    "generateReadme": "echo \"\" > README.md && jsdoc2md lib/**/* --template templates/README.hbs > README.md"
+  },
+  "publishConfig": {
+    "registry": "https://pillarproject.jfrog.io/pillarproject/api/npm/npm/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://iamkio@github.com/pillarwallet/common-logger.git"
+  },
+  "author": "Kieran Goodary <kieran@2030.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pillarwallet/common-logger/issues"
+  },
+  "homepage": "https://github.com/pillarwallet/common-logger#readme",
+  "dependencies": {
+    "winston": "3.0.0",
+    "winston-syslog": "2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "5.4.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-config-prettier": "2.9.0",
+    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-jest": "21.17.0",
+    "eslint-plugin-prettier": "2.6.1",
+    "husky": "0.14.3",
+    "jest": "22.4.4",
+    "jest-cli": "22.4.4",
+    "jsdoc-to-markdown": "4.0.1",
+    "prettier": "1.13.7"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}

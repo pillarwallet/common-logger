@@ -1,3 +1,9 @@
+# Dist
+dist
+
+# NPM Auth file
+.npmrc
+
 # Logs
 logs
 *.log
