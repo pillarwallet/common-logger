@@ -1,7 +1,7 @@
 # common-logger
-Common-logger is a utility that takes a set of configuration parameters and transport options, and returns a Winston logger.
+Common-logger is a utility that takes a set of configuration parameters and transport options, and returns a logger.
 
-Common-logger currently supports three transports: `Console`, `File` and `Syslog`.
+Common-logger currently supports two transports: `Console`, `File`.
 
 ## Updating this README.md
 Run `npm run generateReadme` to parse the code for JSDoc comment blocks and recreate this README.md file.
@@ -10,116 +10,56 @@ Run `npm run generateReadme` to parse the code for JSDoc comment blocks and recr
 Run `npm i @pillarwallet/common-logger`
 
 ## Examples
-Instantiate a logger with default options (just writing out to Console):
+Instantiate a logger with default options (just writing out to Console): <br />
+@param level - (optional) set the level for a single output stream <br />
+@param name - (required) name of Log <br />
+@param path - (optional) Specify the file path to which log records are written <br />
+@param src - (optional - default false). Set true to enable 'src' automatic
+        field with log call source info<br />
 
 ```javascript
-const commonLogger = require('@pillarwallet/common-logger');
+const buildLogger = require('@pillarwallet/common-logger');
 
-commonLogger.build();
-logger.debug('Hello');
+const logger = buildLogger({ level: 'info', name: 'logTest', path: __dirname , src: true });
+logger.info('Logger Info Hey!');
+logger.warn('Logger Warn Hey!');
+logger.fatal('Logger Fatal Hey!');
+logger.error('Logger Error Hey!');
+// with serializer
+// "serializer" functions to produce a JSON-able object from a JavaScript object, so you can easily do the following:
+const req = {
+  method: req.method,
+  url: req.url,
+  headers: req.headers
+};
+logger.info(req, 'Logger Info Test!');
+
 ```
 
-Instantiate a logger with default options, with a console and file transport:
+Standard serializers are:
 
-```javascript
-const commonLogger = require('@pillarwallet/common-logger');
-
-commonLogger.build({}, [{
-  type: 'Console',
-}, {
-  type: 'File',
-  options: {
-    level: 'silly',
-    filename: './logs/silly.log',
-  }
-}]);
-logger.debug('Hello');
-// -> writes to Console
-// -> writes to File
-```
-
-You can add as many transports as you want, providing that they are supported (listed above). Any unrecognised transports are ignored.
+|Field	|Description|
+| ----- | --------------------------------------------------------------------------------------- |
+| err |	Used for serializing JavaScript error objects, including traversing an error's cause chain for error objects with a .cause() -- e.g. as from verror.|
+| req	| Common fields from a node.js HTTP request object.|
+| res	| Common fields from a node.js HTTP response object.|
 
 # API
 
-## Members
+<a name="Constructor"></a>
 
-<dl>
-<dt><a href="#constructTransports">constructTransports</a> ⇒ <code>Array</code></dt>
-<dd><p>Builds an array of transports from a
-list of desired transports. This function will try
-to fulfil the request and cycle through the array
-and match transports.</p>
-</dd>
-<dt><a href="#build">build</a> ⇒ <code>Object</code></dt>
-<dd><p>Main entrypoint function to build and return
-a derived logger instance from Winston.</p>
-</dd>
-</dl>
-
-<a name="constructTransports"></a>
-
-## constructTransports ⇒ <code>Array</code>
-Builds an array of transports from a
-list of desired transports. This function will try
-to fulfil the request and cycle through the array
-and match transports.
+## Constructor ⇒
+this is the constructor of the Logger instance.
+It allows to set Configuration keys:
 
 **Kind**: global variable  
-**Returns**: <code>Array</code> - constructedTransports  
+**Returns**: Object<Logger>  
 
-| Param | Type |
+| Param | Description |
 | --- | --- |
-| desiredTransports | <code>Array</code> | 
+| level | (optional) set the level for a single output stream |
+| name | (required) name of Log |
+| path | (optional) Specify the file path to which log records are written |
+| src | (optional - default false). Set true to enable 'src' automatic        field with log call source info |
 
-<a name="build"></a>
-
-## build ⇒ <code>Object</code>
-Main entrypoint function to build and return
-a derived logger instance from Winston.
-
-**Kind**: global variable  
-
-| Param | Type |
-| --- | --- |
-| desiredTransports | <code>Array</code> | 
-| configuration | <code>Object</code> | 
-
-
-* [build](#build) ⇒ <code>Object</code>
-    * [~winstonLogger](#build..winstonLogger)
-    * [~intermediaryConfiguration](#build..intermediaryConfiguration)
-    * [~constructedTransports](#build..constructedTransports)
-    * [~finalConfiguration](#build..finalConfiguration)
-
-<a name="build..winstonLogger"></a>
-
-### build~winstonLogger
-Create an instance of a derived logger from Winston,
-using the finalConfiguration object build from the
-previous methods.
-
-**Kind**: inner property of [<code>build</code>](#build)  
-<a name="build..intermediaryConfiguration"></a>
-
-### build~intermediaryConfiguration
-Setup scaffolding object for the
-rest of the function to utilise.
-
-**Kind**: inner constant of [<code>build</code>](#build)  
-<a name="build..constructedTransports"></a>
-
-### build~constructedTransports
-Call the constructTransports method with the
-incoming desired transports array.
-
-**Kind**: inner constant of [<code>build</code>](#build)  
-<a name="build..finalConfiguration"></a>
-
-### build~finalConfiguration
-Create a new object called finalConfiguration, merging
-the intermediaryConfiguration, constructed transports
-and the incoming configuration object, if any.
-
-**Kind**: inner constant of [<code>build</code>](#build)  
 
