@@ -1,12 +1,11 @@
 const { createLogger } = require('bunyan');
-const bunyanner = require('../../lib/logger');
+const buildLogger = require('../../lib/logger');
 
 jest.mock('bunyan');
 
 const getMockFirstCall = spy => spy.mock.calls[0][0];
 
 describe('Common Logger', () => {
-  // jest.spyOn(bunyan, 'createLogger');
   createLogger.mockImplementation(options =>
     require.requireActual('bunyan').createLogger(options),
   );
@@ -20,34 +19,20 @@ describe('Common Logger', () => {
   });
 
   it('returns a logger', () => {
-    const logger = bunyanner({ name: 'foo' });
-    // console.log(Object.keys(l.prototype));
-    // console.log(l.info);
-    // expect(typeof logger).toBe('object');
+    expect.assertions(4);
+    const logger = buildLogger({ name: 'foo' });
+
     expect(typeof logger.info).toBe('function');
     expect(typeof logger.error).toBe('function');
+    expect(typeof logger.fatal).toBe('function');
+    expect(typeof logger.warn).toBe('function');
   });
-
-  it('creates a logger at info level by default', () => {
-    bunyanner({ name: 'foo' });
-    expect(createLogger).toBeCalledWith(
-      expect.objectContaining({ level: 'info' }),
-    );
-  });
-
-  it('defaults to src: true', () => {
-    bunyanner({ name: 'foo' });
-    // console.log(createLogger.mock.calls.length);
-    expect(createLogger).toBeCalledWith(expect.objectContaining({ src: true }));
-  });
-
-  it('defaults path');
 
   describe('streams', () => {
     let streams;
 
     beforeEach(() => {
-      bunyanner({ name: 'foo' });
+      buildLogger({ name: 'foo' });
       ({ streams } = getMockFirstCall(createLogger));
     });
 
@@ -65,53 +50,63 @@ describe('Common Logger', () => {
   });
 
   describe('configuration', () => {
-    it('requires a name', () => {
-      expect(() => bunyanner({})).toThrowError(
+    it('allows configurable log level (default is info)', () => {
+      expect.assertions(2);
+      let logger = buildLogger({ name: 'foo' });
+      expect(logger.streams[0].level).toBe(30);
+      logger = buildLogger({ name: 'foo', level: 'error' });
+      expect(logger.streams[0].level).toBe(50);
+    });
+
+    it('allows configurable src (default is false)', () => {
+      expect.assertions(2);
+      let logger = buildLogger({ name: 'foo' });
+      expect(logger.src).toBe(false);
+      logger = buildLogger({ name: 'foo', src: true });
+      expect(logger.src).toBe(true);
+    });
+
+    it('allows configurable file path', () => {
+      const logger = buildLogger({ name: 'foo', path: 'logs/' });
+      expect(logger.streams[1].path).toBe('logs/foo.log');
+    });
+
+    it('allows custom serialisers', () => {
+      expect.assertions(3);
+      const logger = buildLogger({ name: 'foo', path: 'logs/' });
+      expect(logger.serializers).toHaveProperty('err');
+      expect(logger.serializers).toHaveProperty('req');
+      expect(logger.serializers).toHaveProperty('res');
+    });
+  });
+
+  describe('possible errors', () => {
+    // needs a test, or only documentation
+    it('constructor does not have `name` param', () => {
+      expect(() => buildLogger({})).toThrowError(
         new TypeError('`name` is a required option'),
       );
     });
 
-    // it('defaults src: true');
-    it('allows configurable log level (default is info)');
+    it('path is not right', () => {
+      expect(() =>
+        buildLogger({
+          name: 'foo',
+          path: '#@__|/±§":;?><.,`~*&^%$#@™£¢§§ˆˆ•ªº',
+        }),
+      ).toThrowError(
+        new TypeError('failed to create log file with this path!'),
+      );
+    });
 
-    it('allows configurable src (default is true)');
-
-    it('allows configurable file path');
-
-    it('allows custom serialisers');
-
-    // only logs to console in dev env?
-  });
-
-  describe('request parsing', () => {
-    it('extends default `req` serialiser'); // correlationId
-
-    it('method');
-
-    it('path');
-
-    it('correlation ID');
-  });
-
-  describe('err parsing', () => {
-    // needs a test, or only documentation
-  });
-
-  describe('logging', () => {
-    // maybe integration
-    // level
-    // path
-    // timestamp
-    // hostname
-    // pid
-    // ...
-
-    it('user level set in config');
-
-    it('includes src');
-
-    it('uses custom serialisers');
-
-    it('logs to custom path'); // maybe integration...
+    it('constructor options object is not correct', () => {
+      expect(() =>
+        buildLogger({
+          name: 'foo',
+          path: 'logs/',
+          level: 'Gavin level',
+        }),
+      ).toThrowError(new TypeError('unknown level name: "Gavin level"'));
+    });
   });
 });

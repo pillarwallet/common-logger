@@ -1,3 +1,3 @@
-const winstonizer = require('./lib/winstonizer');
+const logger = require('./lib/logger');
 
-module.exports = winstonizer;
+module.exports = logger;

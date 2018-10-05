@@ -1,10 +1,11 @@
 {
   "name": "@pillarwallet/common-logger",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "A common module that allows a logger to be instantiated and returns an instance of a logger.",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "test:unit": "jest unit",
     "test:integration": "jest integration",
     "test": "npm run lint && npm run test:unit",
@@ -26,14 +27,14 @@
   "homepage": "https://github.com/pillarwallet/common-logger#readme",
   "dependencies": {
     "bunyan": "1.8.12",
-    "winston": "3.0.0",
-    "winston-syslog": "2.0.0"
+    "fs": "0.0.1-security",
+    "path": "0.12.7"
   },
   "devDependencies": {
     "eslint": "5.4.0",
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-config-prettier": "2.9.0",
-    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-import": "2.14.0",
     "eslint-plugin-jest": "21.17.0",
     "eslint-plugin-prettier": "2.6.1",
     "husky": "0.14.3",
