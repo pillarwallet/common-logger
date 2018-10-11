@@ -49,17 +49,17 @@ Standard serializers are:
 <a name="Constructor"></a>
 
 ## Constructor ⇒
-this is the constructor of the Logger instance.
+This is the constructor of the Logger instance.
 It allows to set Configuration keys:
 
 **Kind**: global variable  
 **Returns**: Object<Logger>  
 
-| Param | Description |
-| --- | --- |
-| level | (optional) set the level for a single output stream |
-| name | (required) name of Log |
-| path | (optional) Specify the file path to which log records are written |
-| src | (optional - default false). Set true to enable 'src' automatic        field with log call source info |
+| Param | Type | Description |
+| --- | --- | --- |
+| fileName | <code>String</code> | (required) name of Log |
+| level | <code>String</code> | (optional) set the level for a single output stream |
+| path | <code>String</code> | (optional) Specify the file path to which log records are written |
+| src | <code>Boolean</code> | (optional) Defaults to false. Set true to enable 'src' automatic        field with log call source info |
 
 
