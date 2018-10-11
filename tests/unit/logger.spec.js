@@ -19,9 +19,9 @@ describe('Common Logger', () => {
     jest.restoreAllMocks();
   });
 
-  it('should return a logger', () => {
+  it('returns a logger', () => {
     expect.assertions(4);
-    const logger = buildLogger({ fileName: randomFilename() });
+    const logger = buildLogger({ name: randomFilename() });
 
     expect(typeof logger.info).toBe('function');
     expect(typeof logger.error).toBe('function');
@@ -33,30 +33,30 @@ describe('Common Logger', () => {
     let streams;
 
     beforeEach(() => {
-      buildLogger({ fileName: randomFilename() });
+      buildLogger({ name: randomFilename() });
       ({ streams } = getMockFirstCall(createLogger));
     });
 
-    it('should set a console stream', () => {
+    it('sets a console stream', () => {
       expect(streams).toEqual(
         expect.arrayContaining([{ level: 'info', stream: process.stdout }]),
       );
     });
 
-    it('should set a file stream', () => {
+    it('sets a file stream', () => {
       expect(streams[1].type).toEqual('raw');
     });
   });
 
   describe('Configuration functionality', () => {
-    it('should allow configurable log level (default is info)', () => {
+    it('allows configurable log level (default is info)', () => {
       let logger;
       expect.assertions(2);
 
-      logger = buildLogger({ fileName: randomFilename() });
+      logger = buildLogger({ name: randomFilename() });
       expect(logger.streams[0].level).toBe(30);
 
-      logger = buildLogger({ fileName: randomFilename(), level: 'error' });
+      logger = buildLogger({ name: randomFilename(), level: 'error' });
       expect(logger.streams[0].level).toBe(50);
     });
 
@@ -64,22 +64,22 @@ describe('Common Logger', () => {
       let logger;
       expect.assertions(2);
 
-      logger = buildLogger({ fileName: randomFilename() });
+      logger = buildLogger({ name: randomFilename() });
       expect(logger.src).toBe(false);
 
-      logger = buildLogger({ fileName: randomFilename(), src: true });
+      logger = buildLogger({ name: randomFilename(), src: true });
       expect(logger.src).toBe(true);
     });
 
     it('allows configurable file name', () => {
-      const fileName = randomFilename();
-      const logger = buildLogger({ fileName, path: 'logs/' });
+      const name = randomFilename();
+      const logger = buildLogger({ name, path: 'logs/' });
 
-      expect(logger.fields.name).toEqual(fileName);
+      expect(logger.fields.name).toEqual(name);
     });
 
     it('allows custom serialisers', () => {
-      const logger = buildLogger({ fileName: randomFilename(), path: 'logs/' });
+      const logger = buildLogger({ name: randomFilename(), path: 'logs/' });
       expect.assertions(3);
 
       expect(logger.serializers).toHaveProperty('err');
@@ -91,16 +91,16 @@ describe('Common Logger', () => {
   describe('Possible errors', () => {
     // TODO: Needs a test, or only documentation
 
-    it('constructor does not have `fileName` param', () => {
+    it('the constructor does not have `name` param', () => {
       expect(() => buildLogger({})).toThrowError(
-        new TypeError('`fileName` is a required option'),
+        new TypeError('`name` is a required option'),
       );
     });
 
-    it('should throw a TypeError when the path is not writeable', () => {
+    it('throws a TypeError when the path is not writeable', () => {
       expect(() =>
         buildLogger({
-          fileName: randomFilename(),
+          name: randomFilename(),
           path: '#@__|/±§":;?><.,`~*&^%$#@™£¢§§ˆˆ•ªº',
         }),
       ).toThrowError(
@@ -110,10 +110,10 @@ describe('Common Logger', () => {
       );
     });
 
-    it('should throw a TypeError when constructor options object are not correct', () => {
+    it('throws a TypeError when constructor options object are not correct', () => {
       expect(() =>
         buildLogger({
-          fileName: randomFilename(),
+          name: randomFilename(),
           path: 'logs/',
           level: 'Gavin level',
         }),

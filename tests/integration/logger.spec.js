@@ -2,7 +2,7 @@ const buildLogger = require('../../index');
 
 describe('Common Logger', () => {
   it('should log to a file', () => {
-    const logger = buildLogger({ fileName: 'logTest', path: __dirname });
+    const logger = buildLogger({ name: 'logTest', path: __dirname });
 
     logger.info('Logger Info Test!');
     logger.warn('Logger Warn Test!');
@@ -11,7 +11,7 @@ describe('Common Logger', () => {
   });
 
   it('should test serializer', () => {
-    const logger = buildLogger({ fileName: 'logSerializer', path: __dirname });
+    const logger = buildLogger({ name: 'logSerializer', path: __dirname });
 
     const req = {
       log: 'serializer',
