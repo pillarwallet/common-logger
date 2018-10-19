@@ -1,7 +1,7 @@
 # common-logger
-Common-logger is a utility that takes a set of configuration parameters and transport options, and returns a logger.
+Common-logger is a utility that takes a set of configuration parameters and returns a logger.
 
-Common-logger currently supports two transports: `Console`, `File`.
+Common-logger currently supports two log types: `Console`(stdout), `File`(stream).
 
 ## Updating this README.md
 Run `npm run generateReadme` to parse the code for JSDoc comment blocks and recreate this README.md file.
@@ -20,7 +20,7 @@ Instantiate a logger with default options (just writing out to Console): <br />
 ```javascript
 const buildLogger = require('@pillarwallet/common-logger');
 
-const logger = buildLogger({ level: 'info', name: 'logTest', path: __dirname , src: true });
+const logger = buildLogger({ level: 'info', name: 'logTest', path: __dirname , src: false });
 logger.info('Logger Info Hey!');
 logger.warn('Logger Warn Hey!');
 logger.fatal('Logger Fatal Hey!');
@@ -36,6 +36,18 @@ logger.info(req, 'Logger Info Test!');
 
 ```
 
+To use HTTP request logger middleware, just follow the example:
+
+```javascript
+const express = require('express');
+
+const app = express();
+
+app.use(logger.middleware());
+
+```
+
+
 Standard serializers are:
 
 |Field	|Description|
@@ -45,6 +57,26 @@ Standard serializers are:
 | res	| Common fields from a node.js HTTP response object.|
 
 # API
+
+## Members
+
+<dl>
+<dt><a href="#Constructor">Constructor</a> ⇒</dt>
+<dd><p>This is the constructor of the Logger instance.
+It allows to set Configuration keys:</p>
+</dd>
+<dt><a href="#middleware">middleware</a></dt>
+<dd><p>use this method as middleware to log http requests.</p>
+</dd>
+</dl>
+
+## Functions
+
+<dl>
+<dt><a href="#httpHeaderParser">httpHeaderParser(string, begin, end)</a> ⇒ <code>string</code></dt>
+<dd><p>Simple string parser</p>
+</dd>
+</dl>
 
 <a name="Constructor"></a>
 
@@ -57,9 +89,35 @@ It allows to set Configuration keys:
 
 | Param | Type | Description |
 | --- | --- | --- |
-| fileName | <code>String</code> | (required) name of Log |
+| name | <code>String</code> | (required) name of Log |
 | level | <code>String</code> | (optional) set the level for a single output stream |
 | path | <code>String</code> | (optional) Specify the file path to which log records are written |
 | src | <code>Boolean</code> | (optional) Defaults to false. Set true to enable 'src' automatic        field with log call source info |
+
+<a name="middleware"></a>
+
+## middleware
+use this method as middleware to log http requests.
+
+**Kind**: global variable  
+
+| Param |
+| --- |
+| req | 
+| res | 
+| next | 
+
+<a name="httpHeaderParser"></a>
+
+## httpHeaderParser(string, begin, end) ⇒ <code>string</code>
+Simple string parser
+
+**Kind**: global function  
+
+| Param |
+| --- |
+| string | 
+| begin | 
+| end | 
 
 

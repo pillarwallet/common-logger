@@ -1,4 +1,5 @@
 const { createLogger } = require('bunyan');
+const rimraf = require('rimraf');
 const buildLogger = require('../../lib/logger');
 
 jest.mock('bunyan');
@@ -7,6 +8,7 @@ const getMockFirstCall = spy => spy.mock.calls[0][0];
 const randomFilename = () => `foo-${Math.floor(Math.random() * 999999 + 1)}`;
 
 describe('Common Logger', () => {
+  const path = 'logs/';
   createLogger.mockImplementation(options =>
     require.requireActual('bunyan').createLogger(options),
   );
@@ -17,11 +19,12 @@ describe('Common Logger', () => {
 
   afterAll(() => {
     jest.restoreAllMocks();
+    rimraf(path, () => {});
   });
 
   it('returns a logger', () => {
     expect.assertions(4);
-    const logger = buildLogger({ name: randomFilename() });
+    const logger = buildLogger({ name: randomFilename(), path });
 
     expect(typeof logger.info).toBe('function');
     expect(typeof logger.error).toBe('function');
@@ -33,7 +36,7 @@ describe('Common Logger', () => {
     let streams;
 
     beforeEach(() => {
-      buildLogger({ name: randomFilename() });
+      buildLogger({ name: randomFilename(), path });
       ({ streams } = getMockFirstCall(createLogger));
     });
 
@@ -53,10 +56,10 @@ describe('Common Logger', () => {
       let logger;
       expect.assertions(2);
 
-      logger = buildLogger({ name: randomFilename() });
+      logger = buildLogger({ name: randomFilename(), path });
       expect(logger.streams[0].level).toBe(30);
 
-      logger = buildLogger({ name: randomFilename(), level: 'error' });
+      logger = buildLogger({ name: randomFilename(), path, level: 'error' });
       expect(logger.streams[0].level).toBe(50);
     });
 
@@ -64,22 +67,22 @@ describe('Common Logger', () => {
       let logger;
       expect.assertions(2);
 
-      logger = buildLogger({ name: randomFilename() });
+      logger = buildLogger({ name: randomFilename(), path });
       expect(logger.src).toBe(false);
 
-      logger = buildLogger({ name: randomFilename(), src: true });
+      logger = buildLogger({ name: randomFilename(), path, src: true });
       expect(logger.src).toBe(true);
     });
 
     it('allows configurable file name', () => {
       const name = randomFilename();
-      const logger = buildLogger({ name, path: 'logs/' });
+      const logger = buildLogger({ name, path });
 
       expect(logger.fields.name).toEqual(name);
     });
 
     it('allows custom serialisers', () => {
-      const logger = buildLogger({ name: randomFilename(), path: 'logs/' });
+      const logger = buildLogger({ name: randomFilename(), path });
       expect.assertions(3);
 
       expect(logger.serializers).toHaveProperty('err');
@@ -92,7 +95,7 @@ describe('Common Logger', () => {
     // TODO: Needs a test, or only documentation
 
     it('the constructor does not have `name` param', () => {
-      expect(() => buildLogger({})).toThrowError(
+      expect(() => buildLogger({ path })).toThrowError(
         new TypeError('`name` is a required option'),
       );
     });
@@ -114,10 +117,42 @@ describe('Common Logger', () => {
       expect(() =>
         buildLogger({
           name: randomFilename(),
-          path: 'logs/',
+          path,
           level: 'Gavin level',
         }),
       ).toThrowError('unknown level name: "Gavin level"');
+    });
+  });
+
+  describe('HTTP request middleware Logger', () => {
+    it('checks if logger have middleware function', () => {
+      const logger = buildLogger({ name: randomFilename(), path });
+      expect(logger).toHaveProperty('middleware');
+      expect(typeof logger.middleware).toBe('function');
+    });
+
+    it('expects logger middleware to be called with req/res properties', () => {
+      const logger = buildLogger({ name: randomFilename(), path });
+      jest.spyOn(logger, 'info');
+      const req = {
+        method: 'GET',
+        url: path,
+      };
+      const res = {
+        _header: 'X-Response-Time: 3ms \r\nDate:',
+        statusCode: 200,
+      };
+      const next = () => 'next';
+      logger.middleware(req, res, next);
+      expect(logger.info).toHaveBeenCalledWith(
+        {
+          method: 'GET',
+          responseTime: '3ms',
+          statusCode: 200,
+          url: 'logs/',
+        },
+        'HTTP REQUEST',
+      );
     });
   });
 });

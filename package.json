@@ -1,6 +1,6 @@
 {
   "name": "@pillarwallet/common-logger",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A common module that allows a logger to be instantiated and returns an instance of a logger.",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,10 @@
     "bunyan": "1.8.12",
     "bunyan-rotating-file-stream": "1.6.3",
     "fs": "0.0.1-security",
-    "path": "0.12.7"
+    "path": "0.12.7",
+    "read-last-lines": "1.6.0",
+    "response-time": "2.3.2",
+    "rimraf": "2.6.2"
   },
   "devDependencies": {
     "eslint": "5.4.0",
