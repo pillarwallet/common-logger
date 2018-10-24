@@ -1,23 +1,22 @@
 const concatPath = require('path');
 const readLastLines = require('read-last-lines');
+const express = require('express');
+const superTest = require('supertest');
 const buildLogger = require('../../index');
 
-const getLogFile = path => {
-  const promise = new Promise(resolve => {
-    setTimeout(() => resolve(readLastLines.read(path, 1)));
-  });
-  return promise;
-};
+const getLogFile = path =>
+  new Promise(resolve =>
+    setTimeout(() => resolve(readLastLines.read(path, 1)), 500),
+  );
 
 describe('Common Logger', () => {
   const path = concatPath.join(__dirname, '/logs');
-  let logger;
+  const logger = buildLogger({
+    name: 'logTest',
+    path,
+  });
 
   it('should log to a file', async () => {
-    logger = buildLogger({
-      name: 'logTest',
-      path,
-    });
     logger.info('Logger Info Test!');
     const lastLog = await getLogFile(`${path}/logTest.log`);
     expect(lastLog).toMatch('logTest');
@@ -25,11 +24,6 @@ describe('Common Logger', () => {
   });
 
   it('should test serializer', async () => {
-    logger = buildLogger({
-      name: 'logSerializer',
-      path,
-    });
-
     const req = {
       log: 'serializer',
       type: 'oneType',
@@ -37,32 +31,49 @@ describe('Common Logger', () => {
     };
 
     logger.info(req, 'Logger serializer Test!');
-    const lastLog = await getLogFile(`${path}/logSerializer.log`);
-    expect(lastLog).toMatch('logSerializer');
+    const lastLog = await getLogFile(`${path}/logTest.log`);
+    expect(lastLog).toMatch('criticalLevel');
     expect(lastLog).toMatch('Logger serializer Test!');
     expect(lastLog).toMatch('serializer');
   });
 
-  it('should test middleware', async () => {
-    logger = buildLogger({
-      name: 'logMiddleware',
-      path,
+  describe('middleware', () => {
+    const app = express();
+    app.use(logger.middleware());
+    app.use('/', (req, res) => {
+      res.send('Hello');
     });
 
-    const req = {
-      method: 'GET',
-      url: path,
-    };
-    const res = {
-      _header: 'X-Response-Time: 3ms \r\nDate:',
-      statusCode: 200,
-    };
-    const next = () => 'next';
+    const server = app.listen(3000);
+    const request = superTest(server);
 
-    logger.middleware(req, res, next);
-    const lastLog = await getLogFile(`${path}/logMiddleware.log`);
-    expect(lastLog).toMatch('"msg":"HTTP REQUEST"');
-    expect(lastLog).toMatch('"method":"GET",');
-    expect(lastLog).toMatch('"responseTime":"3ms"');
+    afterAll(done => {
+      server.close(() => done);
+    });
+
+    it('should append log file with http request serializer', async () => {
+      await request.get('/');
+
+      const lastLog = await getLogFile(`${path}/logTest.log`);
+      expect(lastLog).toMatch('"msg":"HTTP REQUEST"');
+      expect(lastLog).toMatch('"method":"GET",');
+      expect(lastLog).toMatch('"responseTime"');
+    });
+
+    it('checks if logger info is being called with http request serializer', async () => {
+      jest.spyOn(logger, 'info');
+
+      await request.get('/');
+
+      expect(logger.info).toHaveBeenCalledWith(
+        {
+          method: 'GET',
+          responseTime: expect.any(String),
+          statusCode: 200,
+          url: '/',
+        },
+        'HTTP REQUEST',
+      );
+    });
   });
 });

@@ -30,9 +30,7 @@
     "bunyan-rotating-file-stream": "1.6.3",
     "fs": "0.0.1-security",
     "path": "0.12.7",
-    "read-last-lines": "1.6.0",
-    "response-time": "2.3.2",
-    "rimraf": "2.6.2"
+    "response-time": "2.3.2"
   },
   "devDependencies": {
     "eslint": "5.4.0",
@@ -41,11 +39,15 @@
     "eslint-plugin-import": "2.14.0",
     "eslint-plugin-jest": "21.17.0",
     "eslint-plugin-prettier": "2.6.1",
+    "express": "4.16.4",
     "husky": "0.14.3",
     "jest": "22.4.4",
+    "rimraf": "2.6.2",
     "jest-cli": "22.4.4",
     "jsdoc-to-markdown": "4.0.1",
-    "prettier": "1.13.7"
+    "prettier": "1.13.7",
+    "read-last-lines": "1.6.0",
+    "supertest": "3.3.0"
   },
   "jest": {
     "testEnvironment": "node"

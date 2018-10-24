@@ -1,8 +1,10 @@
 const { createLogger } = require('bunyan');
 const rimraf = require('rimraf');
+const responseTime = require('response-time');
 const buildLogger = require('../../lib/logger');
 
 jest.mock('bunyan');
+jest.mock('response-time');
 
 const getMockFirstCall = spy => spy.mock.calls[0][0];
 const randomFilename = () => `foo-${Math.floor(Math.random() * 999999 + 1)}`;
@@ -92,8 +94,6 @@ describe('Common Logger', () => {
   });
 
   describe('Possible errors', () => {
-    // TODO: Needs a test, or only documentation
-
     it('the constructor does not have `name` param', () => {
       expect(() => buildLogger({ path })).toThrowError(
         new TypeError('`name` is a required option'),
@@ -133,26 +133,8 @@ describe('Common Logger', () => {
 
     it('expects logger middleware to be called with req/res properties', () => {
       const logger = buildLogger({ name: randomFilename(), path });
-      jest.spyOn(logger, 'info');
-      const req = {
-        method: 'GET',
-        url: path,
-      };
-      const res = {
-        _header: 'X-Response-Time: 3ms \r\nDate:',
-        statusCode: 200,
-      };
-      const next = () => 'next';
-      logger.middleware(req, res, next);
-      expect(logger.info).toHaveBeenCalledWith(
-        {
-          method: 'GET',
-          responseTime: '3ms',
-          statusCode: 200,
-          url: 'logs/',
-        },
-        'HTTP REQUEST',
-      );
+      logger.middleware();
+      expect(responseTime).toHaveBeenCalledTimes(1);
     });
   });
 });
