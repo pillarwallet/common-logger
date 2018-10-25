@@ -1,7 +1,7 @@
 # common-logger
-Common-logger is a utility that takes a set of configuration parameters and transport options, and returns a logger.
+Common-logger is a utility that takes a set of configuration parameters and returns a logger.
 
-Common-logger currently supports two transports: `Console`, `File`.
+Common-logger currently supports two log types: `Console`(stdout), `File`(stream).
 
 ## Updating this README.md
 Run `npm run generateReadme` to parse the code for JSDoc comment blocks and recreate this README.md file.
@@ -20,7 +20,7 @@ Instantiate a logger with default options (just writing out to Console): <br />
 ```javascript
 const buildLogger = require('@pillarwallet/common-logger');
 
-const logger = buildLogger({ level: 'info', name: 'logTest', path: __dirname , src: true });
+const logger = buildLogger({ level: 'info', name: 'logTest', path: __dirname , src: false });
 logger.info('Logger Info Hey!');
 logger.warn('Logger Warn Hey!');
 logger.fatal('Logger Fatal Hey!');
@@ -35,6 +35,18 @@ const req = {
 logger.info(req, 'Logger Info Test!');
 
 ```
+
+To use HTTP request logger middleware, just follow the example:
+
+```javascript
+const express = require('express');
+
+const app = express();
+
+app.use(logger.middleware());
+
+```
+
 
 Standard serializers are:
 
