@@ -1,3 +1,7 @@
+/**
+ * Setting NODE_ENV to 'qa' by default. This will allow
+ * 'bunyan-rotating-file-stream' module to be called.
+ */
 process.env.NODE_ENV = 'qa';
 
 const { createLogger } = require('bunyan');
@@ -57,6 +61,7 @@ describe('Common Logger', () => {
     });
 
     it('sets a file stream', () => {
+      expect(bunyanRotatingFileStream).toHaveBeenCalled();
       expect(streams[1].type).toEqual('raw');
     });
   });
