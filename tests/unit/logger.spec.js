@@ -1,10 +1,14 @@
+process.env.NODE_ENV = 'qa';
+
 const { createLogger } = require('bunyan');
+const bunyanRotatingFileStream = require('bunyan-rotating-file-stream');
 const rimraf = require('rimraf');
 const responseTime = require('response-time');
 const buildLogger = require('../../lib/logger');
 
 jest.mock('bunyan');
 jest.mock('response-time');
+jest.mock('bunyan-rotating-file-stream');
 
 const getMockFirstCall = spy => spy.mock.calls[0][0];
 const randomFilename = () => `foo-${Math.floor(Math.random() * 999999 + 1)}`;
@@ -14,6 +18,10 @@ describe('Common Logger', () => {
   createLogger.mockImplementation(options =>
     require.requireActual('bunyan').createLogger(options),
   );
+
+  beforeEach(() => {
+    bunyanRotatingFileStream.mockClear();
+  });
 
   afterEach(() => {
     createLogger.mockClear();
@@ -90,6 +98,12 @@ describe('Common Logger', () => {
       expect(logger.serializers).toHaveProperty('err');
       expect(logger.serializers).toHaveProperty('req');
       expect(logger.serializers).toHaveProperty('res');
+    });
+
+    it('Calls bunyanRotatingFileStream when process.env.NODE_ENV !== "test"', () => {
+      buildLogger({ name: randomFilename(), path });
+
+      expect(bunyanRotatingFileStream).toHaveBeenCalled();
     });
   });
 
