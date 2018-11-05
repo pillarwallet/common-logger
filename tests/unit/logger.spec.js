@@ -100,7 +100,7 @@ describe('Common Logger', () => {
       expect(logger.serializers).toHaveProperty('res');
     });
 
-    it('Calls bunyanRotatingFileStream when process.env.NODE_ENV !== "test"', () => {
+    it('calls bunyanRotatingFileStream when process.env.NODE_ENV !== "test"', () => {
       buildLogger({ name: randomFilename(), path });
 
       expect(bunyanRotatingFileStream).toHaveBeenCalled();
