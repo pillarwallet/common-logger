@@ -1,9 +1,3 @@
-/**
- * Setting NODE_ENV to 'qa' by default. This will allow
- * 'bunyan-rotating-file-stream' module to be called.
- */
-process.env.NODE_ENV = 'qa';
-
 const { createLogger } = require('bunyan');
 const bunyanRotatingFileStream = require('bunyan-rotating-file-stream');
 const rimraf = require('rimraf');
@@ -105,10 +99,16 @@ describe('Common Logger', () => {
       expect(logger.serializers).toHaveProperty('res');
     });
 
-    it('calls bunyanRotatingFileStream when process.env.NODE_ENV !== "test"', () => {
+    it('calls file rotator module by default (logToFile option omitted or true)', () => {
       buildLogger({ name: randomFilename(), path });
 
       expect(bunyanRotatingFileStream).toHaveBeenCalled();
+    });
+
+    it('does not call file rotator module (logToFile option is false)', () => {
+      buildLogger({ name: randomFilename(), path, logToFile: false });
+
+      expect(bunyanRotatingFileStream).not.toHaveBeenCalled();
     });
   });
 
