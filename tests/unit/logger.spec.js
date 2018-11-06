@@ -1,10 +1,12 @@
 const { createLogger } = require('bunyan');
+const bunyanRotatingFileStream = require('bunyan-rotating-file-stream');
 const rimraf = require('rimraf');
 const responseTime = require('response-time');
 const buildLogger = require('../../lib/logger');
 
 jest.mock('bunyan');
 jest.mock('response-time');
+jest.mock('bunyan-rotating-file-stream');
 
 const getMockFirstCall = spy => spy.mock.calls[0][0];
 const randomFilename = () => `foo-${Math.floor(Math.random() * 999999 + 1)}`;
@@ -14,6 +16,10 @@ describe('Common Logger', () => {
   createLogger.mockImplementation(options =>
     require.requireActual('bunyan').createLogger(options),
   );
+
+  beforeEach(() => {
+    bunyanRotatingFileStream.mockClear();
+  });
 
   afterEach(() => {
     createLogger.mockClear();
@@ -49,6 +55,7 @@ describe('Common Logger', () => {
     });
 
     it('sets a file stream', () => {
+      expect(bunyanRotatingFileStream).toHaveBeenCalled();
       expect(streams[1].type).toEqual('raw');
     });
   });
@@ -90,6 +97,18 @@ describe('Common Logger', () => {
       expect(logger.serializers).toHaveProperty('err');
       expect(logger.serializers).toHaveProperty('req');
       expect(logger.serializers).toHaveProperty('res');
+    });
+
+    it('calls file rotator module by default (logToFile option omitted or true)', () => {
+      buildLogger({ name: randomFilename(), path });
+
+      expect(bunyanRotatingFileStream).toHaveBeenCalled();
+    });
+
+    it('does not call file rotator module (logToFile option is false)', () => {
+      buildLogger({ name: randomFilename(), path, logToFile: false });
+
+      expect(bunyanRotatingFileStream).not.toHaveBeenCalled();
     });
   });
 

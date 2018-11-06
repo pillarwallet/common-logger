@@ -1,6 +1,6 @@
 {
   "name": "@pillarwallet/common-logger",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A common module that allows a logger to be instantiated and returns an instance of a logger.",
   "main": "index.js",
   "scripts": {
