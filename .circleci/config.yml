@@ -53,10 +53,15 @@ jobs:
       - run:
           name: Publish package to Artifactory
           command: npm publish
+      - run:
+          name: Announce Publish
+          command: |
+            chmod +x .circleci/announcePublish.sh
+            .circleci/announcePublish.sh "Common Logger" "$(node -e "console.log(require('./package.json').name)")@$(node -e "console.log(require('./package.json').version)")"
       - slack/status:
           fail_only: false
-          failure_message: "Triggered by: *${CIRCLE_USERNAME}* \n\n Ooops! The *$CIRCLE_JOB* job has failed! :circleci-fail:"
-          success_message: "Triggered by: *${CIRCLE_USERNAME}* \n\n Yay! The *$CIRCLE_JOB* job has succeeded! :circleci-pass:"
+          failure_message: "Triggered by: *${CIRCLE_USERNAME}* \n\n Ooops! No new logs for you guys, the *$CIRCLE_JOB* job has failed! :circleci-fail:"
+          success_message: "Triggered by: *${CIRCLE_USERNAME}* \n\n Nice Job, the *$CIRCLE_JOB* job has succeeded. This means you now can log even more! :circleci-pass:"
           only_for_branches: master
           webhook: "${SLACK_WEBHOOK_URL}"
 
