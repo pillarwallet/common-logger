@@ -7,7 +7,7 @@ jobs:
   test:
     working_directory: ~/common-logger
     docker:
-      - image: circleci/node:8.11.1
+      - image: circleci/node:12.12.0
     steps:
       - checkout
       - run:
@@ -36,7 +36,7 @@ jobs:
   publish:
     working_directory: ~/common-logger
     docker:
-      - image: circleci/node:8.11.1
+      - image: circleci/node:12.12.0
     steps:
       - checkout
       - restore_cache:
