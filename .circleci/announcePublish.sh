@@ -9,7 +9,7 @@ cat <<EOM
 {
     "attachments": [
         {
-            "fallback": "A new version of $applicationName is available for use.",
+            "fallback": "A new version of $applicationName is available for use. :circleci-pass:",
             "color": "#33CC66",
             "pretext": "A new version of $applicationName is available for use. :circleci-pass:",
             "title": "$CIRCLE_PROJECT_REPONAME",
