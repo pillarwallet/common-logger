@@ -11,7 +11,7 @@ cat <<EOM
         {
             "fallback": "A new version of $applicationName is available for use.",
             "color": "#33CC66",
-            "pretext": "A new version of $applicationName is available for use.",
+            "pretext": "In *some* cases, logs can be helpful, so a new version of $applicationName is available for use. :circleci-pass:",
             "title": "$CIRCLE_PROJECT_REPONAME",
             "title_link": "https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID",
             "text": "artifact published: $package",
