@@ -12,9 +12,6 @@
     "precommit": "npm test",
     "generateReadme": "echo \"\" > README.md && jsdoc2md lib/**/* --template templates/README.hbs > README.md"
   },
-  "publishConfig": {
-    "registry": "https://pillarproject.jfrog.io/pillarproject/api/npm/npm/"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://iamkio@github.com/pillarwallet/common-logger.git"
